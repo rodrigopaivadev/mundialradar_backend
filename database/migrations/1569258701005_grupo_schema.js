@@ -4,14 +4,15 @@
 const Schema = use('Schema')
 
 class GrupoSchema extends Schema {
-  up () {
+  up() {
     this.create('grupos', (table) => {
       table.increments()
+      table.string('nome').notNullable()
       table.timestamps()
     })
   }
 
-  down () {
+  down() {
     this.drop('grupos')
   }
 }
