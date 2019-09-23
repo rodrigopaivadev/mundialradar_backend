@@ -24,7 +24,6 @@ class ClienteTelefoneSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       table.timestamps()
-      table.timestamps()
     })
   }
 

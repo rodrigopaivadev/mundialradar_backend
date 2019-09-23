@@ -6,6 +6,7 @@ const Schema = use('Schema')
 class ContatoSchema extends Schema {
   up() {
     this.create('contatos', table => {
+      table.increments()
       table.string('nome').notNullable()
       table.string('telefone').notNullable()
       table
@@ -16,7 +17,6 @@ class ContatoSchema extends Schema {
         .inTable('clientes')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-      table.increments()
       table.timestamps()
     })
   }
