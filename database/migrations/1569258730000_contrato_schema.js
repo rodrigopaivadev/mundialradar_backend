@@ -4,11 +4,11 @@
 const Schema = use('Schema')
 
 class ContratoSchema extends Schema {
-  up() {
+  up () {
     this.create('contratos', table => {
       table.increments()
       table
-        .integer('id_cliente')
+        .integer('cliente_id')
         .unsigned()
         .notNullable()
         .references('id')
@@ -16,7 +16,7 @@ class ContratoSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       table
-        .integer('id_veiculo')
+        .integer('veiculo_id')
         .unsigned()
         .notNullable()
         .references('id')
@@ -24,7 +24,7 @@ class ContratoSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       table
-        .integer('id_plano')
+        .integer('plano_id')
         .unsigned()
         .notNullable()
         .references('id')
@@ -35,7 +35,7 @@ class ContratoSchema extends Schema {
     })
   }
 
-  down() {
+  down () {
     this.drop('contratos')
   }
 }

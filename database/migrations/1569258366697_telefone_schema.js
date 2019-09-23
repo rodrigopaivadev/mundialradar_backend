@@ -10,7 +10,7 @@ class TelefoneSchema extends Schema {
       table.string('numero').notNullable()
       table.string('tipo').nullable()
       table
-        .integer('id_cliente')
+        .integer('cliente_id')
         .unsigned()
         .notNullable()
         .references('id')

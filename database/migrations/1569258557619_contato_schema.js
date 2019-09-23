@@ -4,13 +4,13 @@
 const Schema = use('Schema')
 
 class ContatoSchema extends Schema {
-  up() {
-    this.create('contatos', table => {
+  up () {
+    this.create('contatoes', table => {
       table.increments()
       table.string('nome').notNullable()
       table.string('telefone').notNullable()
       table
-        .integer('id_cliente')
+        .integer('cliente_id')
         .unsigned()
         .notNullable()
         .references('id')
@@ -21,8 +21,8 @@ class ContatoSchema extends Schema {
     })
   }
 
-  down() {
-    this.drop('contatos')
+  down () {
+    this.drop('contatoes')
   }
 }
 

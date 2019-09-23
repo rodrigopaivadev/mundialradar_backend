@@ -4,7 +4,7 @@
 const Schema = use('Schema')
 
 class VeiculoSchema extends Schema {
-  up() {
+  up () {
     this.create('veiculos', table => {
       table.increments()
       table.string('fabricante').nullable()
@@ -20,7 +20,7 @@ class VeiculoSchema extends Schema {
       table.text('local_equipamento').nullable()
       table.text('observacao').nullable()
       table
-        .integer('id_grupo')
+        .integer('grupo_id')
         .unsigned()
         .nullable()
         .references('id')
@@ -28,7 +28,7 @@ class VeiculoSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       table
-        .integer('id_rastreador')
+        .integer('rastreador_id')
         .unsigned()
         .notNullable()
         .references('id')
@@ -39,7 +39,7 @@ class VeiculoSchema extends Schema {
     })
   }
 
-  down() {
+  down () {
     this.drop('veiculos')
   }
 }

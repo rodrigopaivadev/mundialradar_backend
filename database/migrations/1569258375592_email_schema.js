@@ -9,7 +9,7 @@ class EmailSchema extends Schema {
       table.increments()
       table.string('email').notNullable()
       table
-        .integer('id_cliente')
+        .integer('cliente_id')
         .unsigned()
         .notNullable()
         .references('id')

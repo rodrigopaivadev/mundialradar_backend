@@ -52,7 +52,15 @@ class ClienteController {
       'status'
     ])
 
+    const telefones = request.input('telefones')
+    const emails = request.input('emails')
+    const contatos = request.input('contatos')
+
     const cliente = await Cliente.create(data)
+
+    await cliente.telefones().createMany(telefones)
+    await cliente.emails().createMany(emails)
+    await cliente.contatos().createMany(contatos)
 
     return cliente
   }

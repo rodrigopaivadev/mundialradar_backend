@@ -4,7 +4,7 @@
 const Schema = use('Schema')
 
 class RastreadorSchema extends Schema {
-  up() {
+  up () {
     this.create('rastreadores', table => {
       table.increments()
       table.string('imei').notNullable()
@@ -15,7 +15,7 @@ class RastreadorSchema extends Schema {
         .notNullable()
       table.boolean('oficina').notNullable()
       table
-        .integer('id_chip')
+        .integer('chip_id')
         .unsigned()
         .notNullable()
         .references('id')
@@ -26,7 +26,7 @@ class RastreadorSchema extends Schema {
     })
   }
 
-  down() {
+  down () {
     this.drop('rastreadores')
   }
 }
