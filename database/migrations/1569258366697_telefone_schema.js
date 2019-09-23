@@ -4,14 +4,16 @@
 const Schema = use('Schema')
 
 class TelefoneSchema extends Schema {
-  up () {
-    this.create('telefones', (table) => {
+  up() {
+    this.create('telefones', table => {
       table.increments()
+      table.string('numero').notNullable()
+      table.string('tipo').nullable()
       table.timestamps()
     })
   }
 
-  down () {
+  down() {
     this.drop('telefones')
   }
 }

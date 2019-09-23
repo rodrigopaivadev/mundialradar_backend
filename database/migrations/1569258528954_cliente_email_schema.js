@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema');
+const Schema = use('Schema')
 
 class ClienteEmailSchema extends Schema {
   up() {
     this.create('cliente_emails', table => {
-      table.increments();
+      table.increments()
       table
         .integer('id_cliente')
         .unsigned()
@@ -14,7 +14,7 @@ class ClienteEmailSchema extends Schema {
         .references('id')
         .inTable('clientes')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE');
+        .onDelete('CASCADE')
       table
         .integer('id_email')
         .unsigned()
@@ -22,14 +22,14 @@ class ClienteEmailSchema extends Schema {
         .references('id')
         .inTable('emails')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE');
-      table.timestamps();
-    });
+        .onDelete('CASCADE')
+      table.timestamps()
+    })
   }
 
   down() {
-    this.drop('cliente_emails');
+    this.drop('cliente_emails')
   }
 }
 
-module.exports = ClienteEmailSchema;
+module.exports = ClienteEmailSchema

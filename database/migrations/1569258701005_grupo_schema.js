@@ -1,20 +1,20 @@
-'use strict';
+'use strict'
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema');
+const Schema = use('Schema')
 
 class GrupoSchema extends Schema {
   up() {
     this.create('grupos', table => {
-      table.increments();
-      table.string('nome').notNullable();
-      table.timestamps();
-    });
+      table.increments()
+      table.string('nome').notNullable()
+      table.timestamps()
+    })
   }
 
   down() {
-    this.drop('grupos');
+    this.drop('grupos')
   }
 }
 
-module.exports = GrupoSchema;
+module.exports = GrupoSchema

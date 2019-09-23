@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema');
+const Schema = use('Schema')
 
 class ContratoSchema extends Schema {
   up() {
     this.create('contratos', table => {
-      table.increments();
+      table.increments()
       table
         .integer('id_cliente')
         .unsigned()
@@ -14,7 +14,7 @@ class ContratoSchema extends Schema {
         .references('id')
         .inTable('clientes')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE');
+        .onDelete('CASCADE')
       table
         .integer('id_veiculo')
         .unsigned()
@@ -22,7 +22,7 @@ class ContratoSchema extends Schema {
         .references('id')
         .inTable('veiculos')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE');
+        .onDelete('CASCADE')
       table
         .integer('id_plano')
         .unsigned()
@@ -30,14 +30,14 @@ class ContratoSchema extends Schema {
         .references('id')
         .inTable('planos')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE');
-      table.timestamps();
-    });
+        .onDelete('CASCADE')
+      table.timestamps()
+    })
   }
 
   down() {
-    this.drop('contratos');
+    this.drop('contratos')
   }
 }
 
-module.exports = ContratoSchema;
+module.exports = ContratoSchema
