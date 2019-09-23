@@ -1,19 +1,34 @@
-'use strict'
+'use strict';
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+const Schema = use('Schema');
 
 class RastreadorSchema extends Schema {
-  up () {
-    this.create('rastreadors', (table) => {
-      table.increments()
-      table.timestamps()
-    })
+  up() {
+    this.create('rastreadores', table => {
+      table.increments();
+      table.string('imei').notNullable();
+      table.string('modelo').notNullable();
+      table.string('fabricante').notNullable();
+      table
+        .enu('status', ['ativo', 'inativo', 'cancelado', 'defeito', 'cancelar'])
+        .notNullable();
+      table.boolean('oficina').notNullable();
+      table
+        .integer('id_chip')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('chips')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+      table.timestamps();
+    });
   }
 
-  down () {
-    this.drop('rastreadors')
+  down() {
+    this.drop('rastreadores');
   }
 }
 
-module.exports = RastreadorSchema
+module.exports = RastreadorSchema;
