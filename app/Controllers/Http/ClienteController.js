@@ -19,7 +19,11 @@ class ClienteController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {}
+  async index ({ request }) {
+    const cliente = await Cliente.query().fetch()
+
+    return cliente
+  }
 
   /**
    * Create/save a new cliente.
@@ -44,7 +48,8 @@ class ClienteController {
       'bairro',
       'cidade',
       'estado',
-      'cep'
+      'cep',
+      'status'
     ])
 
     const cliente = await Cliente.create(data)
@@ -61,7 +66,13 @@ class ClienteController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {}
+  async show ({ params, request }) {
+    const cliente = await Cliente.query()
+      .where('id', params.id)
+      .first()
+
+    return cliente
+  }
 
   /**
    * Update cliente details.
@@ -71,7 +82,35 @@ class ClienteController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {}
+  async update ({ params, request }) {
+    const cliente = await Cliente.query()
+      .where('id', params.id)
+      .first()
+
+    const data = request.only([
+      'nome',
+      'apelido',
+      'pessoa',
+      'documento',
+      'rg',
+      'orgao_expedidor',
+      'nascimento',
+      'logradouro',
+      'numero',
+      'complemento',
+      'bairro',
+      'cidade',
+      'estado',
+      'cep',
+      'status'
+    ])
+
+    cliente.merge(data)
+
+    await cliente.save()
+
+    return cliente
+  }
 
   /**
    * Delete a cliente with id.
@@ -81,7 +120,13 @@ class ClienteController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {}
+  async destroy ({ params, request, response }) {
+    const cliente = await Cliente.query()
+      .where('id', params.id)
+      .first()
+
+    await cliente.delete()
+  }
 }
 
 module.exports = ClienteController

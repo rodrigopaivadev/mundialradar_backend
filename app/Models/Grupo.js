@@ -4,6 +4,9 @@
 const Model = use('Model')
 
 class Grupo extends Model {
+  veiculos () {
+    return this.hasMany('App/Models/Veiculo')
+  }
 }
 
 module.exports = Grupo
