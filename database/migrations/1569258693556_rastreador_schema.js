@@ -17,7 +17,7 @@ class RastreadorSchema extends Schema {
       table
         .integer('chip_id')
         .unsigned()
-        .notNullable()
+        .nullable()
         .references('id')
         .inTable('chips')
         .onUpdate('CASCADE')
