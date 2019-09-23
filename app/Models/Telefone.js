@@ -5,9 +5,7 @@ const Model = use('Model')
 
 class Telefone extends Model {
   cliente () {
-    return this.belongsToMany('App/Models/Cliente').pivotModel(
-      'App/Models/ClienteTelefone'
-    )
+    return this.belongsTo('App/Models/Cliente')
   }
 }
 

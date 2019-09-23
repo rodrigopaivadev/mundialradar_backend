@@ -5,15 +5,11 @@ const Model = use('Model')
 
 class Cliente extends Model {
   telefones () {
-    return this.belongsToMany('App/Models/Telefone').pivotModel(
-      'App/Models/ClienteTelefone'
-    )
+    return this.hasMany('App/Models/Telefone')
   }
 
   emails () {
-    return this.belongsToMany('App/Models/Email').pivotModel(
-      'App/Models/ClienteEmail'
-    )
+    return this.hasMany('App/Models/Email')
   }
 
   contatos () {

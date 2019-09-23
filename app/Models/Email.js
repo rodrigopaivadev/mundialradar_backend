@@ -5,9 +5,7 @@ const Model = use('Model')
 
 class Email extends Model {
   cliente () {
-    return this.belongsToMany('App/Models/Cliente').pivotMany(
-      'App/Models/ClienteEmail'
-    )
+    return this.belongsTo('App/Models/Cliente')
   }
 }
 
