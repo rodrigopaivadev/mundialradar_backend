@@ -4,6 +4,8 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Chip = use('App/Models/Chip')
+
 /**
  * Resourceful controller for interacting with chips
  */
@@ -17,19 +19,10 @@ class ChipController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
+  async index ({ request }) {
+    const chip = await Chip.query().fetch()
 
-  /**
-   * Render a form to be used for creating a new chip.
-   * GET chips/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+    return chip
   }
 
   /**
@@ -40,7 +33,12 @@ class ChipController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request }) {
+    const data = request.only(['operadora', 'linha', 'numero'])
+
+    const chip = await Chip.create(data)
+
+    return chip
   }
 
   /**
@@ -52,19 +50,12 @@ class ChipController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
+  async show ({ params, request }) {
+    const chip = await Chip.query()
+      .where('id', params.id)
+      .first()
 
-  /**
-   * Render a form to update an existing chip.
-   * GET chips/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+    return chip
   }
 
   /**
@@ -75,7 +66,18 @@ class ChipController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request }) {
+    const data = request.only(['operadora', 'linha', 'numero'])
+
+    const chip = await Chip.query()
+      .where('id', params.id)
+      .first()
+
+    chip.merge(data)
+
+    await chip.save()
+
+    return chip
   }
 
   /**
@@ -86,7 +88,12 @@ class ChipController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params }) {
+    const chip = await Chip.query()
+      .where('id', params.id)
+      .first()
+
+    await chip.delete()
   }
 }
 

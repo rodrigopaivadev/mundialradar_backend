@@ -4,6 +4,8 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Plano = use('App/Models/Plano')
+
 /**
  * Resourceful controller for interacting with planos
  */
@@ -17,19 +19,10 @@ class PlanoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
+  async index ({ request }) {
+    const plano = await Plano.query().fetch()
 
-  /**
-   * Render a form to be used for creating a new plano.
-   * GET planos/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+    return plano
   }
 
   /**
@@ -41,6 +34,11 @@ class PlanoController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+    const data = request.only(['descricao', 'valor', 'tipo', 'status'])
+
+    const plano = await Plano.create(data)
+
+    return plano
   }
 
   /**
@@ -52,19 +50,12 @@ class PlanoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
+  async show ({ params }) {
+    const plano = await Plano.query()
+      .where('id', params.id)
+      .first()
 
-  /**
-   * Render a form to update an existing plano.
-   * GET planos/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+    return plano
   }
 
   /**
@@ -75,7 +66,18 @@ class PlanoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request }) {
+    const data = request.only(['descricao', 'valor', 'tipo', 'status'])
+
+    const plano = await Plano.query()
+      .where('id', params.id)
+      .first()
+
+    plano.merge(data)
+
+    await plano.save()
+
+    return plano
   }
 
   /**
@@ -86,7 +88,12 @@ class PlanoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params }) {
+    const plano = await Plano.query()
+      .where('id', params.id)
+      .first()
+
+    await plano.delete()
   }
 }
 

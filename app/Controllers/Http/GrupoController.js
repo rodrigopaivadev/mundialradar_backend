@@ -3,7 +3,7 @@
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
-
+const Grupo = use('App/Models/Grupo')
 /**
  * Resourceful controller for interacting with grupos
  */
@@ -17,19 +17,10 @@ class GrupoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
+  async index ({ request }) {
+    const grupo = await Grupo.query().fetch()
 
-  /**
-   * Render a form to be used for creating a new grupo.
-   * GET grupos/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+    return grupo
   }
 
   /**
@@ -40,7 +31,12 @@ class GrupoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request }) {
+    const data = request.only(['nome'])
+
+    const grupo = await Grupo.create(data)
+
+    return grupo
   }
 
   /**
@@ -52,19 +48,12 @@ class GrupoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
+  async show ({ params, request }) {
+    const grupo = await Grupo.query()
+      .where('id', params.id)
+      .first()
 
-  /**
-   * Render a form to update an existing grupo.
-   * GET grupos/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+    return grupo
   }
 
   /**
@@ -76,6 +65,17 @@ class GrupoController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    const data = request.only(['nome'])
+
+    const grupo = await Grupo.query()
+      .where('id', params.id)
+      .first()
+
+    grupo.merge(data)
+
+    await grupo.save()
+
+    return grupo
   }
 
   /**
@@ -87,6 +87,11 @@ class GrupoController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const grupo = await Grupo.query()
+      .where('id', params.id)
+      .first()
+
+    await grupo.delete()
   }
 }
 

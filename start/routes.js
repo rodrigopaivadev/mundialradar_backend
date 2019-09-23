@@ -17,3 +17,8 @@
 const Route = use('Route')
 
 Route.resource('clientes', 'ClienteController').apiOnly()
+Route.resource('chips', 'ChipController').apiOnly()
+Route.resource('grupos', 'GrupoController').apiOnly()
+Route.resource('rastreadores', 'RastreadorController').apiOnly()
+Route.resource('veiculos', 'VeiculoController').apiOnly()
+Route.resource('planos', 'PlanoController').apiOnly()
