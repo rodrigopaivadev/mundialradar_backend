@@ -4,6 +4,7 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Database = use('Database')
 const Cliente = use('App/Models/Cliente')
 
 /**
@@ -20,7 +21,10 @@ class ClienteController {
    * @param {View} ctx.view
    */
   async index ({ request }) {
-    const cliente = await Cliente.query().fetch()
+    const cliente = await Cliente.query()
+      .with('telefones')
+      .with('emails')
+      .fetch()
 
     return cliente
   }
@@ -56,11 +60,15 @@ class ClienteController {
     const emails = request.input('emails')
     const contatos = request.input('contatos')
 
-    const cliente = await Cliente.create(data)
+    const trx = await Database.beginTransaction()
 
-    await cliente.telefones().createMany(telefones)
-    await cliente.emails().createMany(emails)
-    await cliente.contatos().createMany(contatos)
+    const cliente = await Cliente.create(data, trx)
+
+    await cliente.telefones().createMany(telefones, trx)
+    await cliente.emails().createMany(emails, trx)
+    await cliente.contatos().createMany(contatos, trx)
+
+    await trx.commit()
 
     return cliente
   }
@@ -77,6 +85,9 @@ class ClienteController {
   async show ({ params, request }) {
     const cliente = await Cliente.query()
       .where('id', params.id)
+      .with('telefones')
+      .with('emails')
+      .with('contatos')
       .first()
 
     return cliente
@@ -93,6 +104,9 @@ class ClienteController {
   async update ({ params, request }) {
     const cliente = await Cliente.query()
       .where('id', params.id)
+      .with('telefones')
+      .with('emails')
+      .with('contatos')
       .first()
 
     const data = request.only([
