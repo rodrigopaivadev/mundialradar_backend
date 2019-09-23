@@ -4,14 +4,15 @@
 const Schema = use('Schema')
 
 class EmailSchema extends Schema {
-  up () {
-    this.create('emails', (table) => {
+  up() {
+    this.create('emails', table => {
       table.increments()
+      table.string('email').notNullable()
       table.timestamps()
     })
   }
 
-  down () {
+  down() {
     this.drop('emails')
   }
 }

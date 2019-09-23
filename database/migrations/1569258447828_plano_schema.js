@@ -4,14 +4,18 @@
 const Schema = use('Schema')
 
 class PlanoSchema extends Schema {
-  up () {
-    this.create('planos', (table) => {
+  up() {
+    this.create('planos', table => {
       table.increments()
+      table.string('descricao').notNullable()
+      table.string('valor').notNullable()
+      table.string('tipo').notNullable()
+      table.string('status').notNullable()
       table.timestamps()
     })
   }
 
-  down () {
+  down() {
     this.drop('planos')
   }
 }
