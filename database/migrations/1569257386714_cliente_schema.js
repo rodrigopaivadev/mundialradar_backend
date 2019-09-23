@@ -16,7 +16,7 @@ class ClienteSchema extends Schema {
       table.date('nascimento').nullable()
       table.string('logradouro').nullable()
       table.string('numero').nullable()
-      table.string('comlemento').nullable()
+      table.string('complemento').nullable()
       table.string('bairro').nullable()
       table.string('cidade').nullable()
       table.string('estado').nullable()
