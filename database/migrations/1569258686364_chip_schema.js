@@ -4,17 +4,23 @@
 const Schema = use('Schema')
 
 class ChipSchema extends Schema {
-  up() {
+  up () {
     this.create('chips', table => {
       table.increments()
       table.string('operadora').notNullable()
-      table.string('linha').notNullable()
-      table.string('numero').notNullable()
+      table
+        .string('linha')
+        .notNullable()
+        .unique()
+      table
+        .string('numero')
+        .notNullable()
+        .unique()
       table.timestamps()
     })
   }
 
-  down() {
+  down () {
     this.drop('chips')
   }
 }

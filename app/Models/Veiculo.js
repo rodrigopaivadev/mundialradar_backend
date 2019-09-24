@@ -9,6 +9,10 @@ class Veiculo extends Model {
       'App/Models/Contrato'
     )
   }
+
+  rastreador () {
+    return this.belongsTo('App/Models/Rastreador')
+  }
 }
 
 module.exports = Veiculo

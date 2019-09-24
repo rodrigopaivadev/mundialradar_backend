@@ -4,6 +4,10 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Database = use('Database')
+const Rastreador = use('App/Models/Rastreador')
+const Chip = use('App/Models/Chip')
+
 /**
  * Resourceful controller for interacting with rastreadors
  */
@@ -17,19 +21,12 @@ class RastreadorController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
+  async index ({ request }) {
+    const rastreador = await Rastreador.query()
+      .with('chip')
+      .fetch()
 
-  /**
-   * Render a form to be used for creating a new rastreador.
-   * GET rastreadors/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+    return rastreador
   }
 
   /**
@@ -41,6 +38,28 @@ class RastreadorController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+    const data = request.only(['imei', 'modelo', 'fabricante'])
+    const chipId = request.input('chip_id')
+
+    const trx = await Database.beginTransaction()
+
+    const rastreador = await Rastreador.create(
+      {
+        ...data,
+        status: 'ativo',
+        oficina: false
+      },
+      trx
+    )
+
+    if (chipId) {
+      const chip = await Chip.find(chipId)
+      await rastreador.chip().associate(chip, trx)
+    }
+
+    await trx.commit()
+
+    return rastreador
   }
 
   /**
@@ -53,18 +72,11 @@ class RastreadorController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-  }
+    const rastreador = await Rastreador.findOrFail(params.id)
 
-  /**
-   * Render a form to update an existing rastreador.
-   * GET rastreadors/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+    await rastreador.load('chip')
+
+    return rastreador
   }
 
   /**
@@ -76,6 +88,33 @@ class RastreadorController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    const rastreador = await Rastreador.findOrFail(params.id)
+
+    const data = request.only([
+      'imei',
+      'modelo',
+      'fabricante',
+      'status',
+      'oficina'
+    ])
+    const chipId = request.input('chip_id')
+
+    const trx = await Database.beginTransaction()
+
+    if (rastreador.chip_id !== chipId) {
+      await rastreador.chip().dissociate()
+      if (chipId) {
+        const chip = await Chip.find(chipId)
+        await rastreador.chip().associate(chip, trx)
+      }
+    }
+
+    rastreador.merge(data)
+    await rastreador.save(trx)
+
+    await trx.commit()
+
+    return rastreador
   }
 
   /**
@@ -86,7 +125,10 @@ class RastreadorController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params }) {
+    const rastreador = await Rastreador.findOrFail(params.id)
+
+    await rastreador.delete()
   }
 }
 
