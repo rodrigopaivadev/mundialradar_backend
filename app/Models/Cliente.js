@@ -4,19 +4,19 @@
 const Model = use('Model')
 
 class Cliente extends Model {
-  telefones () {
+  telefones() {
     return this.hasMany('App/Models/Telefone')
   }
 
-  emails () {
+  emails() {
     return this.hasMany('App/Models/Email')
   }
 
-  contatos () {
+  contatos() {
     return this.hasMany('App/Models/Contato')
   }
 
-  veiculos () {
+  veiculos() {
     return this.belongsToMany('App/Models/Veiculo').pivotModel(
       'App/Models/Contrato'
     )
