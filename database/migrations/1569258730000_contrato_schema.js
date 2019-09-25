@@ -26,11 +26,11 @@ class ContratoSchema extends Schema {
       table
         .integer('plano_id')
         .unsigned()
-        .notNullable()
+        .nullable()
         .references('id')
         .inTable('planos')
         .onUpdate('CASCADE')
-        .onDelete('CASCADE')
+        .onDelete('SET NULL')
       table.timestamps()
     })
   }

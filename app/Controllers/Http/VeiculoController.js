@@ -4,6 +4,11 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Veiculo = use('App/Models/Veiculo')
+const Grupo = use('App/Models/Grupo')
+const Rastreador = use('App/Models/Rastreador')
+const Plano = use('App/Models/Plano')
+const Contrato = use('App/Models/Contrato')
 /**
  * Resourceful controller for interacting with veiculos
  */
@@ -17,19 +22,14 @@ class VeiculoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
+  async index ({ request }) {
+    const veiculo = await Veiculo.query()
+      .with('cliente')
+      .with('rastreador')
+      .with('grupo')
+      .fetch()
 
-  /**
-   * Render a form to be used for creating a new veiculo.
-   * GET veiculos/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+    return veiculo
   }
 
   /**
@@ -41,6 +41,44 @@ class VeiculoController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+    const data = request.only([
+      'fabricante',
+      'modelo',
+      'placa',
+      'cor',
+      'chassi',
+      'renavam',
+      'combustivel',
+      'identificacao',
+      'possui_bloqueio',
+      'descricao_bloqueio',
+      'local_equipamento',
+      'observacao'
+    ])
+
+    const clienteId = request.input('cliente')
+
+    // const plano = await Plano.find(request.input('plano'))
+
+    const grupo = await Grupo.find(request.input('grupo'))
+
+    const rastreador = await Rastreador.find(request.input('rastreador'))
+
+    const veiculo = await Veiculo.create(data)
+
+    await veiculo.cliente().sync(clienteId)
+
+    // if (plano) {
+    //   const contrato = Contrato.query()
+    //     .where({ veiculo_id: veiculo.id, cliente_id: clienteId })
+    //     .first()
+    //   console.log(contrato.id)
+    // }
+
+    await veiculo.grupo().associate(grupo)
+    await veiculo.rastreador().associate(rastreador)
+
+    return veiculo
   }
 
   /**
@@ -52,20 +90,7 @@ class VeiculoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing veiculo.
-   * GET veiculos/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
+  async show ({ params, request, response, view }) {}
 
   /**
    * Update veiculo details.
@@ -75,8 +100,7 @@ class VeiculoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
-  }
+  async update ({ params, request, response }) {}
 
   /**
    * Delete a veiculo with id.
@@ -86,8 +110,7 @@ class VeiculoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
-  }
+  async destroy ({ params, request, response }) {}
 }
 
 module.exports = VeiculoController

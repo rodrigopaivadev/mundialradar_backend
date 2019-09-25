@@ -4,6 +4,10 @@
 const Model = use('Model')
 
 class Rastreador extends Model {
+  static get table () {
+    return 'rastreadores'
+  }
+
   chip () {
     return this.belongsTo('App/Models/Chip')
   }

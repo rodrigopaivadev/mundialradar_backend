@@ -4,6 +4,10 @@
 const Model = use('Model')
 
 class Contrato extends Model {
+  static get table () {
+    return 'contratos'
+  }
+
   cliente () {
     return this.belongsToMany('App/Models/Cliente')
   }

@@ -4,6 +4,10 @@
 const Model = use('Model')
 
 class Contato extends Model {
+  static get table () {
+    return 'contatos'
+  }
+
   cliente () {
     return this.belongsTo('App/Models/Cliente')
   }
