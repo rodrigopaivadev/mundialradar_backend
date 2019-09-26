@@ -4,11 +4,11 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Database = use('Database')
+
 const Veiculo = use('App/Models/Veiculo')
 const Grupo = use('App/Models/Grupo')
 const Rastreador = use('App/Models/Rastreador')
-const Plano = use('App/Models/Plano')
-const Contrato = use('App/Models/Contrato')
 /**
  * Resourceful controller for interacting with veiculos
  */
@@ -58,25 +58,35 @@ class VeiculoController {
 
     const clienteId = request.input('cliente')
 
-    // const plano = await Plano.find(request.input('plano'))
+    const plano = request.input('plano')
 
     const grupo = await Grupo.find(request.input('grupo'))
 
     const rastreador = await Rastreador.find(request.input('rastreador'))
 
+    const trx = await Database.beginTransaction()
+
     const veiculo = await Veiculo.create(data)
 
-    await veiculo.cliente().sync(clienteId)
+    await veiculo.cliente().attach(clienteId, trx)
 
-    // if (plano) {
-    //   const contrato = Contrato.query()
-    //     .where({ veiculo_id: veiculo.id, cliente_id: clienteId })
-    //     .first()
-    //   console.log(contrato.id)
-    // }
+    if (plano) {
+      await veiculo
+        .cliente()
+        .pivotQuery()
+        .where('cliente_id', clienteId)
+        .update({ plano_id: plano }, trx)
+    }
 
-    await veiculo.grupo().associate(grupo)
-    await veiculo.rastreador().associate(rastreador)
+    if (rastreador) {
+      rastreador.oficina = true
+      await rastreador.save(trx)
+    }
+
+    await veiculo.grupo().associate(grupo, trx)
+    await veiculo.rastreador().associate(rastreador, trx)
+
+    await trx.commit()
 
     return veiculo
   }
@@ -90,7 +100,15 @@ class VeiculoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {}
+  async show ({ params, request }) {
+    const veiculo = await Veiculo.findOrFail(params.id)
+
+    await veiculo.load('cliente')
+    await veiculo.load('grupo')
+    await veiculo.load('rastreador')
+
+    return veiculo
+  }
 
   /**
    * Update veiculo details.
@@ -100,7 +118,30 @@ class VeiculoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {}
+  async update ({ params, request }) {
+    const veiculo = await Veiculo.findOrFail(params.id)
+
+    const data = request.only([
+      'fabricante',
+      'modelo',
+      'placa',
+      'cor',
+      'chassi',
+      'renavam',
+      'combustivel',
+      'identificacao',
+      'possui_bloqueio',
+      'descricao_bloqueio',
+      'local_equipamento',
+      'observacao'
+    ])
+
+    veiculo.merge(data)
+
+    await veiculo.save()
+
+    return veiculo
+  }
 
   /**
    * Delete a veiculo with id.
@@ -110,7 +151,11 @@ class VeiculoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {}
+  async destroy ({ params }) {
+    const veiculo = await Veiculo.findOrFail(params.id)
+
+    await veiculo.delete()
+  }
 }
 
 module.exports = VeiculoController
