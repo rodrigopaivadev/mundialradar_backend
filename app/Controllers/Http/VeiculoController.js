@@ -136,6 +136,21 @@ class VeiculoController {
       'observacao'
     ])
 
+    const rastreadorOn = await Rastreador.find(request.input('rastreador'))
+
+    if (rastreadorOn.id !== veiculo.rastreador_id) {
+      const rastreadorOff = await Rastreador.find(veiculo.rastreador_id)
+      rastreadorOff.oficina = false
+      await rastreadorOff.save()
+
+      await veiculo.rastreador().dissociate()
+
+      rastreadorOn.oficina = true
+      await rastreadorOn.save()
+
+      await veiculo.rastreador().associate(rastreadorOn)
+    }
+
     veiculo.merge(data)
 
     await veiculo.save()
@@ -153,6 +168,12 @@ class VeiculoController {
    */
   async destroy ({ params }) {
     const veiculo = await Veiculo.findOrFail(params.id)
+
+    if (veiculo.rastreador_id) {
+      const rastreador = await Rastreador.find(veiculo.rastreador_id)
+      rastreador.oficina = false
+      await rastreador.save()
+    }
 
     await veiculo.delete()
   }
